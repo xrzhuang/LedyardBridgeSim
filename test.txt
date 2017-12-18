@@ -1,0 +1,807 @@
+Test: LedyardBridgeSim
+Usage: ./bridge num_cars
+	- creates random number of cars (threads) with random directions and speeds
+	- printing states will show where these different threads are so I will show 	  different cases with these random tests
+	- MAX_CARS is hardcoded and for these tests I use 3 as max cars on bridge	
+
+test cases:  num_cars = 2,3,5,10,100
+
+(1) ./bridge 2 - output:
+car 1 waiting in direction TO_NORWICH
+car 1 on bridge TO_NORWICH
+Bridge State: 1 cars on bridge TO_NORWICH
+0 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 0 waiting in direction TO_NORWICH
+car 0 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+0 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 1 went TO_NORWICH
+car 0 went TO_NORWICH
+2 cars have exited successfully.
+
+This test shows liveness -  if a car gets on the bridge, it will eventually cross and get off. Both cars do that here. 
+This test shows efficiency - if there are fewer than MAX_CARS on the bridge and a car is waiting to go in the same direction then that car will get on the bridge too; example, car 0 waits and immediately gets on the bridge.
+
+(2) ./bridge 3 - output:
+car 0 waiting in direction TO_HANOVER
+car 0 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+0 cars waiting to go to TO_NORWICH
+car 1 waiting in direction TO_NORWICH
+car 2 waiting in direction TO_NORWICH
+car 0 went TO_HANOVER
+car 2 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+0 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 1 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+0 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 1 went TO_NORWICH
+car 2 went TO_NORWICH
+3 cars have exited successfully.
+
+This test shows safety - car 0 wants to go to Hanover and cars 1 and 2 want to go to Norwich. Because car 0 arrives at the bridge first, traffic is going to Hanover. Cars 1 and 2 wait until car 0 “went TO_HANOVER” before getting on the bridge and thus avoiding collisions.
+This test shows liveness - after car 0 leaves the bridge there are no cars on the bridge, so cars 1 and 2 get on. If there are no cars on the bridge, a car waiting will get on.
+
+(3)./bridge 5 - output:
+car 1 waiting in direction TO_HANOVER
+car 3 waiting in direction TO_HANOVER
+car 4 waiting in direction TO_HANOVER
+car 1 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+0 cars waiting to go to TO_NORWICH
+car 2 waiting in direction TO_NORWICH
+car 3 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+0 cars waiting to go to TO_NORWICH
+car 0 waiting in direction TO_HANOVER
+car 4 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+1 cars waiting to go to TO_NORWICH
+car 3 went TO_HANOVER
+car 0 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+1 cars waiting to go to TO_NORWICH
+car 1 went TO_HANOVER
+car 0 went TO_HANOVER
+car 4 went TO_HANOVER
+car 2 on bridge TO_NORWICH
+Bridge State: 1 cars on bridge TO_NORWICH
+0 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 2 went TO_NORWICH
+5 cars have exited successfully.
+
+This test shows safety - there cannot be more than MAX_CARS on the bridge at once in this case 3 is the max. car 1 is the first to get on the bridge to Hanover, then car 3, then car 4, leaving car 0 waiting in direction to Hanover. The state of car 4 on the bridge does not capture car 0 arriving yet but that’s ok. As we can see in this output car 0 does not get onto the bridge until car 3 leaves.
+
+(4) ./bridge 10 - output:
+car 0 waiting in direction TO_HANOVER
+car 0 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+car 3 waiting in direction TO_HANOVER
+0 cars waiting to go to TO_NORWICH
+car 3 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+0 cars waiting to go to TO_NORWICH
+car 2 waiting in direction TO_HANOVER
+car 2 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+car 6 waiting in direction TO_NORWICH
+car 5 waiting in direction TO_HANOVER
+car 7 waiting in direction TO_NORWICH
+car 4 waiting in direction TO_HANOVER
+0 cars waiting to go to TO_NORWICH
+car 9 waiting in direction TO_NORWICH
+car 1 waiting in direction TO_HANOVER
+car 8 waiting in direction TO_NORWICH
+car 2 went TO_HANOVER
+car 5 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+2 cars waiting to go to TO_HANOVER
+4 cars waiting to go to TO_NORWICH
+car 0 went TO_HANOVER
+car 1 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+1 cars waiting to go to TO_HANOVER
+4 cars waiting to go to TO_NORWICH
+car 3 went TO_HANOVER
+car 5 went TO_HANOVER
+car 1 went TO_HANOVER
+car 6 on bridge TO_NORWICH
+Bridge State: 1 cars on bridge TO_NORWICH
+3 cars waiting to go to TO_NORWICH
+1 cars waiting to go to TO_HANOVER
+car 8 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+2 cars waiting to go to TO_NORWICH
+1 cars waiting to go to TO_HANOVER
+car 9 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+1 cars waiting to go to TO_NORWICH
+1 cars waiting to go to TO_HANOVER
+car 8 went TO_NORWICH
+car 9 went TO_NORWICH
+car 6 went TO_NORWICH
+car 4 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+1 cars waiting to go to TO_NORWICH
+car 4 went TO_HANOVER
+car 7 on bridge TO_NORWICH
+Bridge State: 1 cars on bridge TO_NORWICH
+0 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 7 went TO_NORWICH
+10 cars have exited successfully.
+
+This test shows no direction is starved - instead of having my cars cross the bridge in two arbitrary clusters, I considered myself as a car waiting in line at the bridge and realizing that for example if I was 1 out of 10 cars randomly generated going to Hanover and I’m not the first car to get there in my code, I would have to wait much too long! So to ensure no direction is starved waiting for cars in the other direction during their morning commute, I set the quota for the bridge to be the same as the MAX_CARS that cross. In this case, 3. Once 3 cars have crossed the bridge, I shut off the gate for all cars in that direction. Which means some cars that had previously been on the bridge are still allowed to cross, but after the last one of them has crossed, I broadcast cvar in the opposite direction. So say I was that 1 car going to Hanover out of 9, instead of waiting for all 9 cars to cross first, my wait is cut down to 5 cars now. 
+In the output above, we see cars 0, 3, and 2 are the first three cars to get on the bridge to Hanover. Car 2 gets off first and car 5 hops on, there remain 3 cars on the bridge to Hanover. Then car 0 exits and car 1 gets on the bridge. Finally when, car 3 exits, the bridge will allow traffic from the other direction. However, cars 5 and 1 remain on the bridge so we let them exit before we allow car 6 on bridge to Norwich. This repeats itself allowing less than 2*MAX_CARS to pass through in any given direction before switching directions. This traffic switch of course gets varied by the overflowed cars as seen in the example above.
+
+(5) ./bridge 100 - output:
+
+This test is really annoying to read, but I needed to use a large number to show my edge case. Below you can see that my code indicates that there is a collision, the direction of traffic does not match the direction of the car that just got on. There are two examples of this happening. I do not know how to solve this, unfortunately but it occurs very rarely and seems to be more of an issue with the placing of my print statement for finding collisions and my method of implementing starvation prevention by flipping a traffic signal, although I think it remains to be in the best place. The integrity (safety) of the bridge is still kept in tact and the bridge remains efficient and lively.
+First, example shows 3 cars going to Hanover and then getting off, car 83 gets on the bridge to Norwich, and so does car 56, there also appears to be a mystery car that appears since it says there are 3 cars on the bridge to Norwich when I only counted 2 and when car 83 leaves, car 58 is also trying to go to Norwich and there indicates there is a collision. I suspect that when car 83 left, it flipped the traffic switch while car 58 was just getting on so that it signaled that it was not in the flow of traffic when it was really the last car allowed to cross in that direction.
+“car 95 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+28 cars waiting to go to TO_HANOVER
+48 cars waiting to go to TO_NORWICH
+car 90 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+27 cars waiting to go to TO_HANOVER
+48 cars waiting to go to TO_NORWICH
+car 99 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+26 cars waiting to go to TO_HANOVER
+48 cars waiting to go to TO_NORWICH
+car 99 went TO_HANOVER
+car 95 went TO_HANOVER
+car 90 went TO_HANOVER
+car 83 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+46 cars waiting to go to TO_NORWICH
+26 cars waiting to go to TO_HANOVER
+car 56 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+45 cars waiting to go to TO_NORWICH
+26 cars waiting to go to TO_HANOVER
+car 83 went TO_NORWICH
+you have a collision!
+car 58 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_HANOVER
+45 cars waiting to go to TO_NORWICH
+26 cars waiting to go to TO_HANOVER
+car 56 went TO_NORWICH
+car 58 went TO_NORWICH
+car 72 on bridge TO_HANOVER”
+
+The second case, seems to be the same kind of edge case when a thread is just getting on the bridge while the traffic switch is flipped. Notice it’s an error in the same place.
+“3 cars on bridge TO_HANOVER
+20 cars waiting to go to TO_HANOVER
+42 cars waiting to go to TO_NORWICH
+car 88 went TO_HANOVER
+you have a collision!
+car 43 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_NORWICH
+20 cars waiting to go to TO_HANOVER
+42 cars waiting to go to TO_NORWICH
+car 77 went TO_HANOVER
+car 43 went TO_HANOVER
+car 62 on bridge TO_NORWICH”
+
+
+
+car 0 waiting in direction TO_HANOVER
+car 0 on bridge TO_HANOVER
+car 2 waiting in direction TO_NORWICH
+car 1 waiting in direction TO_HANOVER
+car 3 waiting in direction TO_NORWICH
+Bridge State: 1 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+0 cars waiting to go to TO_NORWICH
+car 6 waiting in direction TO_NORWICH
+car 1 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+car 7 waiting in direction TO_HANOVER
+car 4 waiting in direction TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 8 waiting in direction TO_HANOVER
+car 5 waiting in direction TO_HANOVER
+1 cars waiting to go to TO_NORWICH
+car 9 waiting in direction TO_HANOVER
+car 9 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+1 cars waiting to go to TO_NORWICH
+car 10 waiting in direction TO_NORWICH
+car 9 went TO_HANOVER
+car 7 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+3 cars waiting to go to TO_NORWICH
+car 11 waiting in direction TO_NORWICH
+car 12 waiting in direction TO_HANOVER
+car 13 waiting in direction TO_HANOVER
+car 14 waiting in direction TO_HANOVER
+car 15 waiting in direction TO_HANOVER
+car 16 waiting in direction TO_HANOVER
+car 17 waiting in direction TO_HANOVER
+car 19 waiting in direction TO_NORWICH
+car 18 waiting in direction TO_HANOVER
+car 20 waiting in direction TO_HANOVER
+car 21 waiting in direction TO_NORWICH
+car 22 waiting in direction TO_NORWICH
+car 23 waiting in direction TO_NORWICH
+car 24 waiting in direction TO_NORWICH
+car 25 waiting in direction TO_NORWICH
+car 26 waiting in direction TO_NORWICH
+car 27 waiting in direction TO_NORWICH
+car 28 waiting in direction TO_NORWICH
+car 29 waiting in direction TO_NORWICH
+car 30 waiting in direction TO_HANOVER
+car 31 waiting in direction TO_HANOVER
+car 32 waiting in direction TO_HANOVER
+car 33 waiting in direction TO_NORWICH
+car 34 waiting in direction TO_HANOVER
+car 35 waiting in direction TO_NORWICH
+car 36 waiting in direction TO_NORWICH
+car 37 waiting in direction TO_NORWICH
+car 38 waiting in direction TO_HANOVER
+car 39 waiting in direction TO_NORWICH
+car 40 waiting in direction TO_HANOVER
+car 41 waiting in direction TO_NORWICH
+car 42 waiting in direction TO_NORWICH
+car 43 waiting in direction TO_HANOVER
+car 44 waiting in direction TO_NORWICH
+car 45 waiting in direction TO_NORWICH
+car 46 waiting in direction TO_NORWICH
+car 47 waiting in direction TO_HANOVER
+car 48 waiting in direction TO_NORWICH
+car 49 waiting in direction TO_NORWICH
+car 50 waiting in direction TO_NORWICH
+car 51 waiting in direction TO_NORWICH
+car 52 waiting in direction TO_NORWICH
+car 53 waiting in direction TO_NORWICH
+car 54 waiting in direction TO_NORWICH
+car 55 waiting in direction TO_HANOVER
+car 56 waiting in direction TO_NORWICH
+car 57 waiting in direction TO_HANOVER
+car 58 waiting in direction TO_NORWICH
+car 59 waiting in direction TO_NORWICH
+car 60 waiting in direction TO_NORWICH
+car 61 waiting in direction TO_NORWICH
+car 62 waiting in direction TO_NORWICH
+car 63 waiting in direction TO_HANOVER
+car 64 waiting in direction TO_HANOVER
+car 65 waiting in direction TO_HANOVER
+car 66 waiting in direction TO_NORWICH
+car 67 waiting in direction TO_HANOVER
+car 68 waiting in direction TO_HANOVER
+car 69 waiting in direction TO_NORWICH
+car 70 waiting in direction TO_NORWICH
+car 71 waiting in direction TO_HANOVER
+car 72 waiting in direction TO_HANOVER
+car 73 waiting in direction TO_NORWICH
+car 74 waiting in direction TO_HANOVER
+car 75 waiting in direction TO_NORWICH
+car 76 waiting in direction TO_HANOVER
+car 77 waiting in direction TO_HANOVER
+car 78 waiting in direction TO_NORWICH
+car 79 waiting in direction TO_HANOVER
+car 80 waiting in direction TO_HANOVER
+car 81 waiting in direction TO_NORWICH
+car 82 waiting in direction TO_NORWICH
+car 83 waiting in direction TO_NORWICH
+car 84 waiting in direction TO_NORWICH
+car 85 waiting in direction TO_HANOVER
+car 86 waiting in direction TO_NORWICH
+car 87 waiting in direction TO_HANOVER
+car 88 waiting in direction TO_HANOVER
+car 89 waiting in direction TO_HANOVER
+car 90 waiting in direction TO_HANOVER
+car 91 waiting in direction TO_NORWICH
+car 92 waiting in direction TO_NORWICH
+car 93 waiting in direction TO_NORWICH
+car 94 waiting in direction TO_HANOVER
+car 95 waiting in direction TO_HANOVER
+car 96 waiting in direction TO_NORWICH
+car 97 waiting in direction TO_NORWICH
+car 98 waiting in direction TO_NORWICH
+car 99 waiting in direction TO_HANOVER
+car 1 went TO_HANOVER
+car 5 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+39 cars waiting to go to TO_HANOVER
+56 cars waiting to go to TO_NORWICH
+car 5 went TO_HANOVER
+car 0 went TO_HANOVER
+car 7 went TO_HANOVER
+car 2 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+53 cars waiting to go to TO_NORWICH
+39 cars waiting to go to TO_HANOVER
+car 6 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+53 cars waiting to go to TO_NORWICH
+39 cars waiting to go to TO_HANOVER
+car 98 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+53 cars waiting to go to TO_NORWICH
+39 cars waiting to go to TO_HANOVER
+car 6 went TO_NORWICH
+car 98 went TO_NORWICH
+car 2 went TO_NORWICH
+car 13 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+37 cars waiting to go to TO_HANOVER
+53 cars waiting to go to TO_NORWICH
+car 20 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+36 cars waiting to go to TO_HANOVER
+53 cars waiting to go to TO_NORWICH
+car 8 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+36 cars waiting to go to TO_HANOVER
+53 cars waiting to go to TO_NORWICH
+car 8 went TO_HANOVER
+car 13 went TO_HANOVER
+car 20 went TO_HANOVER
+car 23 on bridge TO_NORWICH
+Bridge State: 1 cars on bridge TO_NORWICH
+52 cars waiting to go to TO_NORWICH
+36 cars waiting to go to TO_HANOVER
+car 25 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+51 cars waiting to go to TO_NORWICH
+36 cars waiting to go to TO_HANOVER
+car 23 went TO_NORWICH
+car 32 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+35 cars waiting to go to TO_HANOVER
+51 cars waiting to go to TO_NORWICH
+car 32 went TO_HANOVER
+car 34 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+34 cars waiting to go to TO_HANOVER
+51 cars waiting to go to TO_NORWICH
+car 34 went TO_HANOVER
+car 38 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+33 cars waiting to go to TO_HANOVER
+51 cars waiting to go to TO_NORWICH
+car 38 went TO_HANOVER
+car 25 went TO_NORWICH
+car 63 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+30 cars waiting to go to TO_HANOVER
+51 cars waiting to go to TO_NORWICH
+car 31 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+30 cars waiting to go to TO_HANOVER
+51 cars waiting to go to TO_NORWICH
+car 40 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+30 cars waiting to go to TO_HANOVER
+51 cars waiting to go to TO_NORWICH
+car 63 went TO_HANOVER
+car 64 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+29 cars waiting to go to TO_HANOVER
+51 cars waiting to go to TO_NORWICH
+car 64 went TO_HANOVER
+car 40 went TO_HANOVER
+car 31 went TO_HANOVER
+car 24 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+49 cars waiting to go to TO_NORWICH
+29 cars waiting to go to TO_HANOVER
+car 59 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+48 cars waiting to go to TO_NORWICH
+29 cars waiting to go to TO_HANOVER
+car 49 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+48 cars waiting to go to TO_NORWICH
+29 cars waiting to go to TO_HANOVER
+car 59 went TO_NORWICH
+car 24 went TO_NORWICH
+car 49 went TO_NORWICH
+car 95 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+28 cars waiting to go to TO_HANOVER
+48 cars waiting to go to TO_NORWICH
+car 90 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+27 cars waiting to go to TO_HANOVER
+48 cars waiting to go to TO_NORWICH
+car 99 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+26 cars waiting to go to TO_HANOVER
+48 cars waiting to go to TO_NORWICH
+car 99 went TO_HANOVER
+car 95 went TO_HANOVER
+car 90 went TO_HANOVER
+car 83 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+46 cars waiting to go to TO_NORWICH
+26 cars waiting to go to TO_HANOVER
+car 56 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+45 cars waiting to go to TO_NORWICH
+26 cars waiting to go to TO_HANOVER
+car 83 went TO_NORWICH
+you have a collision!
+car 58 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_HANOVER
+45 cars waiting to go to TO_NORWICH
+26 cars waiting to go to TO_HANOVER
+car 56 went TO_NORWICH
+car 58 went TO_NORWICH
+car 72 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+24 cars waiting to go to TO_HANOVER
+45 cars waiting to go to TO_NORWICH
+car 71 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+23 cars waiting to go to TO_HANOVER
+45 cars waiting to go to TO_NORWICH
+car 94 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+23 cars waiting to go to TO_HANOVER
+45 cars waiting to go to TO_NORWICH
+car 72 went TO_HANOVER
+car 71 went TO_HANOVER
+car 94 went TO_HANOVER
+car 19 on bridge TO_NORWICH
+Bridge State: 1 cars on bridge TO_NORWICH
+44 cars waiting to go to TO_NORWICH
+23 cars waiting to go to TO_HANOVER
+car 10 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+43 cars waiting to go to TO_NORWICH
+23 cars waiting to go to TO_HANOVER
+car 51 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+42 cars waiting to go to TO_NORWICH
+23 cars waiting to go to TO_HANOVER
+car 19 went TO_NORWICH
+car 51 went TO_NORWICH
+car 10 went TO_NORWICH
+car 88 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+21 cars waiting to go to TO_HANOVER
+42 cars waiting to go to TO_NORWICH
+car 77 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+20 cars waiting to go to TO_HANOVER
+42 cars waiting to go to TO_NORWICH
+car 88 went TO_HANOVER
+you have a collision!
+car 43 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_NORWICH
+20 cars waiting to go to TO_HANOVER
+42 cars waiting to go to TO_NORWICH
+car 77 went TO_HANOVER
+car 43 went TO_HANOVER
+car 62 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+39 cars waiting to go to TO_NORWICH
+20 cars waiting to go to TO_HANOVER
+car 29 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+39 cars waiting to go to TO_NORWICH
+20 cars waiting to go to TO_HANOVER
+car 52 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+39 cars waiting to go to TO_NORWICH
+20 cars waiting to go to TO_HANOVER
+car 29 went TO_NORWICH
+car 52 went TO_NORWICH
+car 62 went TO_NORWICH
+car 80 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+19 cars waiting to go to TO_HANOVER
+39 cars waiting to go to TO_NORWICH
+car 68 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+18 cars waiting to go to TO_HANOVER
+39 cars waiting to go to TO_NORWICH
+car 74 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+17 cars waiting to go to TO_HANOVER
+39 cars waiting to go to TO_NORWICH
+car 80 went TO_HANOVER
+car 68 went TO_HANOVER
+car 74 went TO_HANOVER
+car 82 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+37 cars waiting to go to TO_NORWICH
+17 cars waiting to go to TO_HANOVER
+car 75 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+36 cars waiting to go to TO_NORWICH
+17 cars waiting to go to TO_HANOVER
+car 3 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+36 cars waiting to go to TO_NORWICH
+17 cars waiting to go to TO_HANOVER
+car 82 went TO_NORWICH
+car 3 went TO_NORWICH
+car 75 went TO_NORWICH
+car 89 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+14 cars waiting to go to TO_HANOVER
+36 cars waiting to go to TO_NORWICH
+car 65 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+14 cars waiting to go to TO_HANOVER
+36 cars waiting to go to TO_NORWICH
+car 15 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+14 cars waiting to go to TO_HANOVER
+36 cars waiting to go to TO_NORWICH
+car 15 went TO_HANOVER
+car 65 went TO_HANOVER
+car 89 went TO_HANOVER
+car 73 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+34 cars waiting to go to TO_NORWICH
+14 cars waiting to go to TO_HANOVER
+car 27 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+33 cars waiting to go to TO_NORWICH
+14 cars waiting to go to TO_HANOVER
+car 54 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+33 cars waiting to go to TO_NORWICH
+14 cars waiting to go to TO_HANOVER
+car 54 went TO_NORWICH
+car 27 went TO_NORWICH
+car 73 went TO_NORWICH
+car 67 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+13 cars waiting to go to TO_HANOVER
+33 cars waiting to go to TO_NORWICH
+car 12 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+12 cars waiting to go to TO_HANOVER
+33 cars waiting to go to TO_NORWICH
+car 76 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+11 cars waiting to go to TO_HANOVER
+33 cars waiting to go to TO_NORWICH
+car 67 went TO_HANOVER
+car 76 went TO_HANOVER
+car 12 went TO_HANOVER
+car 45 on bridge TO_NORWICH
+Bridge State: 1 cars on bridge TO_NORWICH
+32 cars waiting to go to TO_NORWICH
+11 cars waiting to go to TO_HANOVER
+car 48 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+31 cars waiting to go to TO_NORWICH
+11 cars waiting to go to TO_HANOVER
+car 93 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+30 cars waiting to go to TO_NORWICH
+11 cars waiting to go to TO_HANOVER
+car 93 went TO_NORWICH
+car 48 went TO_NORWICH
+car 45 went TO_NORWICH
+car 30 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+10 cars waiting to go to TO_HANOVER
+30 cars waiting to go to TO_NORWICH
+car 85 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+9 cars waiting to go to TO_HANOVER
+30 cars waiting to go to TO_NORWICH
+car 57 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+8 cars waiting to go to TO_HANOVER
+30 cars waiting to go to TO_NORWICH
+car 57 went TO_HANOVER
+car 85 went TO_HANOVER
+car 30 went TO_HANOVER
+car 97 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+28 cars waiting to go to TO_NORWICH
+8 cars waiting to go to TO_HANOVER
+car 92 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+27 cars waiting to go to TO_NORWICH
+8 cars waiting to go to TO_HANOVER
+car 37 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+27 cars waiting to go to TO_NORWICH
+8 cars waiting to go to TO_HANOVER
+car 37 went TO_NORWICH
+car 97 went TO_NORWICH
+car 92 went TO_NORWICH
+car 17 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+7 cars waiting to go to TO_HANOVER
+27 cars waiting to go to TO_NORWICH
+car 18 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+6 cars waiting to go to TO_HANOVER
+27 cars waiting to go to TO_NORWICH
+car 79 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+5 cars waiting to go to TO_HANOVER
+27 cars waiting to go to TO_NORWICH
+car 17 went TO_HANOVER
+car 79 went TO_HANOVER
+car 18 went TO_HANOVER
+car 96 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+25 cars waiting to go to TO_NORWICH
+5 cars waiting to go to TO_HANOVER
+car 61 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+24 cars waiting to go to TO_NORWICH
+5 cars waiting to go to TO_HANOVER
+car 46 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+24 cars waiting to go to TO_NORWICH
+5 cars waiting to go to TO_HANOVER
+car 96 went TO_NORWICH
+car 61 went TO_NORWICH
+car 46 went TO_NORWICH
+car 14 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+2 cars waiting to go to TO_HANOVER
+24 cars waiting to go to TO_NORWICH
+car 16 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+2 cars waiting to go to TO_HANOVER
+24 cars waiting to go to TO_NORWICH
+car 47 on bridge TO_HANOVER
+Bridge State: 3 cars on bridge TO_HANOVER
+2 cars waiting to go to TO_HANOVER
+24 cars waiting to go to TO_NORWICH
+car 14 went TO_HANOVER
+car 16 went TO_HANOVER
+car 47 went TO_HANOVER
+car 41 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+22 cars waiting to go to TO_NORWICH
+2 cars waiting to go to TO_HANOVER
+car 21 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+21 cars waiting to go to TO_NORWICH
+2 cars waiting to go to TO_HANOVER
+car 33 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+21 cars waiting to go to TO_NORWICH
+2 cars waiting to go to TO_HANOVER
+car 33 went TO_NORWICH
+car 21 went TO_NORWICH
+car 41 went TO_NORWICH
+car 55 on bridge TO_HANOVER
+Bridge State: 1 cars on bridge TO_HANOVER
+1 cars waiting to go to TO_HANOVER
+21 cars waiting to go to TO_NORWICH
+car 87 on bridge TO_HANOVER
+Bridge State: 2 cars on bridge TO_HANOVER
+0 cars waiting to go to TO_HANOVER
+21 cars waiting to go to TO_NORWICH
+car 87 went TO_HANOVER
+car 55 went TO_HANOVER
+car 36 on bridge TO_NORWICH
+Bridge State: 1 cars on bridge TO_NORWICH
+20 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 50 on bridge TO_NORWICH
+Bridge State: 2 cars on bridge TO_NORWICH
+19 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 26 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+18 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 50 went TO_NORWICH
+car 66 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+17 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 66 went TO_NORWICH
+car 28 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+16 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 26 went TO_NORWICH
+car 60 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+15 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 28 went TO_NORWICH
+car 70 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+14 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 36 went TO_NORWICH
+car 86 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+13 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 86 went TO_NORWICH
+car 39 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+12 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 60 went TO_NORWICH
+car 69 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+11 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 70 went TO_NORWICH
+car 35 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+10 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 39 went TO_NORWICH
+car 84 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+9 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 35 went TO_NORWICH
+car 4 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+8 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 84 went TO_NORWICH
+car 42 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+7 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 69 went TO_NORWICH
+car 53 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+6 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 4 went TO_NORWICH
+car 91 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+5 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 91 went TO_NORWICH
+car 22 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+4 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 53 went TO_NORWICH
+car 81 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+3 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 42 went TO_NORWICH
+car 44 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+2 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 81 went TO_NORWICH
+car 11 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+1 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 22 went TO_NORWICH
+car 78 on bridge TO_NORWICH
+Bridge State: 3 cars on bridge TO_NORWICH
+0 cars waiting to go to TO_NORWICH
+0 cars waiting to go to TO_HANOVER
+car 78 went TO_NORWICH
+car 11 went TO_NORWICH
+car 44 went TO_NORWICH
+100 cars have exited successfully.
